@@ -151,6 +151,16 @@ black aimemo tests examples
 
 ## 📖 Documentation
 
+Full documentation is available in the [docs/](docs/) directory:
+
+- **[Quick Start Guide](docs/quickstart.md)** - Get started in 5 minutes
+- **[Configuration Guide](docs/configuration.md)** - Configure AIMemo for your needs
+- **[Architecture Overview](docs/architecture.md)** - How AIMemo works under the hood
+- **[API Reference](docs/api-reference.md)** - Complete API documentation
+- **[Storage Backends](docs/storage-backends.md)** - Database configuration details
+- **[Examples](docs/examples.md)** - More code examples and use cases
+- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
+
 ### Core API
 
 **AIMemo**
@@ -177,17 +187,77 @@ All automatically, with zero code changes!
 
 ## 🤝 Contributing
 
-Contributions welcome! Please feel free to submit a Pull Request.
+We love contributions! ❤️ AIMemo is an open-source project and we welcome contributions of all kinds:
+
+- 🐛 **Bug Reports**: Found a bug? [Open an issue](https://github.com/gianghungtien/aimemo/issues)
+- 💡 **Feature Requests**: Have an idea? [Share it with us](https://github.com/gianghungtien/aimemo/issues)
+- 📝 **Documentation**: Help improve our docs
+- 🔧 **Code**: Submit a Pull Request
+
+### How to Contribute
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and add tests
+4. **Run tests**: `pytest tests/`
+5. **Commit your changes**: `git commit -m 'Add amazing feature'`
+6. **Push to the branch**: `git push origin feature/amazing-feature`
+7. **Open a Pull Request**
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/gianghungtien/aimemo.git
+cd aimemo
+
+# Install in development mode
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Format code
+black aimemo tests examples
+```
+
+**First time contributing?** Check out issues labeled [`good first issue`](https://github.com/gianghungtien/aimemo/labels/good%20first%20issue) to get started!
+
+### Contributors
+
+Thanks to all the amazing people who have contributed to AIMemo! 🙏
+
+<a href="https://github.com/gianghungtien/aimemo/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gianghungtien/aimemo" />
+</a>
 
 ## 📄 License
 
 MIT License - see LICENSE file for details.
 
-## 🙋 Support
+## 🙋 Support & Community
 
-- **GitHub Issues**: Bug reports and feature requests
-- **Email**: gianghungtien@gmail.com
+Need help? We're here for you!
+
+- 💬 **GitHub Discussions**: Ask questions and share ideas
+- 🐛 **GitHub Issues**: [Report bugs or request features](https://github.com/gianghungtien/aimemo/issues)
+- 📧 **Email**: gianghungtien@gmail.com
+
+### Show Your Support
+
+If you find AIMemo helpful, please consider:
+
+- ⭐ **Star this repository** to show your support
+- 🐦 **Share it** with your friends and colleagues
+- 📝 **Write about it** in your blog or social media
+- 🤝 **Contribute** to make it even better
 
 ---
 
-Built with ❤️ by Jason
+<div align="center">
+
+**Built with ❤️ by Jason**
+
+[⭐ Star on GitHub](https://github.com/gianghungtien/aimemo) • [📖 Documentation](docs/) • [🐛 Report Bug](https://github.com/gianghungtien/aimemo/issues) • [💡 Request Feature](https://github.com/gianghungtien/aimemo/issues)
+
+</div>
