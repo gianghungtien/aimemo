@@ -161,6 +161,13 @@ Full documentation is available in the [docs/](docs/) directory:
 - **[Examples](docs/examples.md)** - More code examples and use cases
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
 
+### Development & Planning
+
+- **[ROADMAP.md](ROADMAP.md)** - Strategic roadmap and future plans
+- **[TODO.md](TODO.md)** - Actionable tasks and sprint planning
+- **[IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)** - Implementation guide for contributors
+- **[SUMMARY.md](SUMMARY.md)** - Development summary and quick overview
+
 ### Core API
 
 **AIMemo**
