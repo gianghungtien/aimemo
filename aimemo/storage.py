@@ -24,6 +24,7 @@ class MemoryStore(ABC):
         namespace: str,
         limit: int = 5,
         tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """Search memories."""
         pass
@@ -58,6 +59,7 @@ class SQLiteStore(MemoryStore):
                     tags TEXT,
                     namespace TEXT NOT NULL,
                     timestamp TEXT NOT NULL,
+                    category TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
@@ -66,6 +68,11 @@ class SQLiteStore(MemoryStore):
             conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_namespace 
                 ON memories(namespace)
+            """)
+            
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_category
+                ON memories(category)
             """)
             
             # Enable FTS5 for full-text search
@@ -82,8 +89,8 @@ class SQLiteStore(MemoryStore):
             conn.execute(
                 """
                 INSERT OR REPLACE INTO memories 
-                (id, content, metadata, tags, namespace, timestamp)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (id, content, metadata, tags, namespace, timestamp, category)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     memory["id"],
@@ -92,6 +99,7 @@ class SQLiteStore(MemoryStore):
                     json.dumps(memory.get("tags", [])),
                     memory["namespace"],
                     memory["timestamp"],
+                    memory.get("category"),
                 ),
             )
             
@@ -121,22 +129,28 @@ class SQLiteStore(MemoryStore):
         namespace: str,
         limit: int = 5,
         tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """Search memories using FTS5."""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             
-            # Use FTS5 for full-text search
-            cursor = conn.execute(
-                """
+            # Build query
+            sql = """
                 SELECT m.* FROM memories m
                 JOIN memories_fts fts ON m.rowid = fts.rowid
                 WHERE fts.content MATCH ? AND m.namespace = ?
-                ORDER BY fts.rank
-                LIMIT ?
-                """,
-                (query, namespace, limit),
-            )
+            """
+            params = [query, namespace]
+            
+            if category:
+                sql += " AND m.category = ?"
+                params.append(category)
+                
+            sql += " ORDER BY fts.rank LIMIT ?"
+            params.append(limit)
+            
+            cursor = conn.execute(sql, params)
             
             results = []
             for row in cursor:
@@ -147,6 +161,7 @@ class SQLiteStore(MemoryStore):
                     "tags": json.loads(row["tags"]),
                     "namespace": row["namespace"],
                     "timestamp": row["timestamp"],
+                    "category": row["category"],
                 })
             
             return results
@@ -194,6 +209,7 @@ class PostgresStore(MemoryStore):
                         tags TEXT[],
                         namespace TEXT NOT NULL,
                         timestamp TIMESTAMP NOT NULL,
+                        category TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """)
@@ -220,12 +236,13 @@ class PostgresStore(MemoryStore):
                 cur.execute(
                     """
                     INSERT INTO memories 
-                    (id, content, metadata, tags, namespace, timestamp)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    (id, content, metadata, tags, namespace, timestamp, category)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (id) DO UPDATE
                     SET content = EXCLUDED.content,
                         metadata = EXCLUDED.metadata,
-                        tags = EXCLUDED.tags
+                        tags = EXCLUDED.tags,
+                        category = EXCLUDED.category
                     """,
                     (
                         memory["id"],
@@ -234,6 +251,7 @@ class PostgresStore(MemoryStore):
                         memory.get("tags", []),
                         memory["namespace"],
                         memory["timestamp"],
+                        memory.get("category"),
                     ),
                 )
                 conn.commit()
@@ -244,6 +262,7 @@ class PostgresStore(MemoryStore):
         namespace: str,
         limit: int = 5,
         tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """Search memories using PostgreSQL full-text search."""
         import psycopg2
@@ -251,16 +270,24 @@ class PostgresStore(MemoryStore):
         
         with psycopg2.connect(self.connection_string) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute(
-                    """
+                sql = """
                     SELECT * FROM memories
                     WHERE namespace = %s
                     AND to_tsvector('english', content) @@ plainto_tsquery('english', %s)
+                """
+                params = [namespace, query]
+                
+                if category:
+                    sql += " AND category = %s"
+                    params.append(category)
+                    
+                sql += """
                     ORDER BY ts_rank(to_tsvector('english', content), plainto_tsquery('english', %s)) DESC
                     LIMIT %s
-                    """,
-                    (namespace, query, query, limit),
-                )
+                """
+                params.extend([query, limit])
+                
+                cur.execute(sql, params)
                 
                 results = []
                 for row in cur:
@@ -271,6 +298,7 @@ class PostgresStore(MemoryStore):
                         "tags": row["tags"],
                         "namespace": row["namespace"],
                         "timestamp": row["timestamp"].isoformat(),
+                        "category": row["category"],
                     })
                 
                 return results

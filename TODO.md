@@ -4,45 +4,45 @@
 
 ### 1. Entity Extraction System
 **File**: `aimemo/extractors.py`
-- [ ] Create `EntityExtractor` base class
-- [ ] Implement simple regex-based extractor
-- [ ] Extract: names, dates, preferences, facts
-- [ ] Add to conversation storage pipeline
-- [ ] Write tests
+- [x] Create `EntityExtractor` base class
+- [x] Implement simple regex-based extractor
+- [x] Extract: names, dates, preferences, facts
+- [x] Add to conversation storage pipeline
+- [x] Write tests
 
 **Dependencies**: None  
 **Estimated Time**: 2-3 days
 
 ### 2. Memory Categorization
 **File**: `aimemo/categorizer.py`
-- [ ] Create memory categories enum (FACT, PREFERENCE, SKILL, RULE, CONTEXT)
-- [ ] Implement simple keyword-based categorizer
-- [ ] Add category field to storage schema
-- [ ] Update search to filter by category
-- [ ] Write tests
+- [x] Create memory categories enum (FACT, PREFERENCE, SKILL, RULE, CONTEXT)
+- [x] Implement simple keyword-based categorizer
+- [x] Add category field to storage schema
+- [x] Update search to filter by category
+- [x] Write tests
 
 **Dependencies**: None  
 **Estimated Time**: 2 days
 
 ### 3. Memory Modes Implementation
 **Files**: `aimemo/core.py`, `aimemo/modes.py`
-- [ ] Add `conscious_ingest` parameter to AIMemo
-- [ ] Add `auto_ingest` parameter to AIMemo
-- [ ] Implement short-term memory store (in-memory)
-- [ ] Add mode-specific context retrieval
+- [x] Add `conscious_ingest` parameter to AIMemo
+- [x] Add `auto_ingest` parameter to AIMemo
+- [x] Implement short-term memory store (in-memory)
+- [x] Add mode-specific context retrieval
 - [ ] Update provider interceptors for modes
-- [ ] Write tests
+- [x] Write tests
 
 **Dependencies**: None  
 **Estimated Time**: 3-4 days
 
 ### 4. Improve Configuration
 **File**: `aimemo/config.py`
-- [ ] Add more configuration options (memory_limit, retention_days, etc.)
-- [ ] Add validation
-- [ ] Support loading from YAML/JSON files
-- [ ] Add config file example
-- [ ] Write tests
+- [x] Add more configuration options (memory_limit, retention_days, etc.)
+- [x] Add validation
+- [x] Support loading from YAML/JSON files
+- [x] Add config file example
+- [x] Write tests
 
 **Dependencies**: None  
 **Estimated Time**: 2 days
@@ -101,13 +101,13 @@
 
 ### 8. Enhanced Context Retrieval
 **File**: `aimemo/retrieval.py`
-- [ ] Create dedicated retrieval module
-- [ ] Implement relevance scoring algorithm
-- [ ] Add time-based weighting (recent = more relevant)
-- [ ] Add category-based filtering
+- [x] Create dedicated retrieval module
+- [x] Implement relevance scoring algorithm
+- [x] Add time-based weighting (recent = more relevant)
+- [x] Add category-based filtering
 - [ ] Implement context window management
 - [ ] Add deduplication
-- [ ] Write tests
+- [x] Write tests
 
 **Dependencies**: Categorization (#2), Vector Search (#7)  
 **Estimated Time**: 1 week
