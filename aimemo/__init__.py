@@ -6,7 +6,7 @@ Author: Jason
 License: MIT
 """
 
-__version__ = "1.0.1"
+__version__ = "1.1.1"
 __author__ = "Jason"
 
 from .core import AIMemo

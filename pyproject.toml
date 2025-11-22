@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aimemo"
-version = "1.0.1"
+version = "1.1.1"
 description = "Memory System for AI Conversations"
 authors = [{name = "Jason", email = "gianghungtien@gmail.com"}]
 license = {text = "MIT"}
@@ -28,6 +28,7 @@ classifiers = [
 
 dependencies = [
     "openai>=1.0.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]

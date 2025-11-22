@@ -3,7 +3,7 @@ Context retrieval system for AIMemo.
 """
 
 from typing import List, Dict, Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 import math
 
 from .storage import MemoryStore
