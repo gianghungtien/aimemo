@@ -20,8 +20,8 @@
 |---------|------------------|---------|----------|
 | **Memory Modes** |
 | Automatic context injection | ✅ Basic | Advanced | High |
-| Conscious mode (working memory) | ❌ | v1.1 | High |
-| Auto mode (dynamic search) | ❌ | v1.1 | High |
+| Conscious mode (working memory) | ✅ | v1.1 | High |
+| Auto mode (dynamic search) | ✅ | v1.1 | High |
 | Combined modes | ❌ | v1.1 | Medium |
 | **Agents** |
 | Memory Agent (extraction) | ❌ | v1.2 | High |
@@ -91,12 +91,12 @@
 ### 1.2 Memory Modes
 **Goal**: Add flexible memory injection strategies
 
-- [ ] **Conscious Mode**
+- [x] **Conscious Mode**
   - One-shot working memory injection
   - Short-term memory context window
   - Configurable memory lifetime
   
-- [ ] **Auto Mode**
+- [x] **Auto Mode**
   - Dynamic search per query
   - Query-specific context retrieval
   - Real-time relevance filtering

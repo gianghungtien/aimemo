@@ -59,6 +59,9 @@ class AIMemo:
         self.categorizer = KeywordCategorizer()
         self.retriever = ContextRetriever(self.store)
         
+        # Working memory (short-term)
+        self._working_memory: List[Dict[str, Any]] = []
+        
         self._enabled = False
         self._providers = {}
         
@@ -184,13 +187,54 @@ class AIMemo:
         Returns:
             Formatted context string
         """
-        memories = self.retriever.get_relevant_context(
-            query=query,
-            namespace=self.namespace,
-            limit=limit
-        )
+        context_parts = []
         
-        return self.retriever.format_context(memories)
+        # 1. Add working memory if conscious ingest is enabled
+        if self.conscious_ingest and self._working_memory:
+            wm_content = [f"- [WORKING] {m['content']}" for m in self._working_memory]
+            context_parts.append("Working Memory:\n" + "\n".join(wm_content))
+            
+        # 2. Add retrieved context if auto ingest is enabled (or default behavior if neither is strictly set?)
+        # If auto_ingest is False, we might skip this? Or is auto_ingest enabling dynamic search?
+        # Let's assume auto_ingest=True means "do dynamic search".
+        # If both are False, maybe we default to dynamic search for backward compatibility?
+        # For now, let's say if auto_ingest is True OR conscious_ingest is False (default behavior)
+        
+        if self.auto_ingest or not self.conscious_ingest:
+            memories = self.retriever.get_relevant_context(
+                query=query,
+                namespace=self.namespace,
+                limit=limit
+            )
+            if memories:
+                context_parts.append(self.retriever.format_context(memories))
+        
+        return "\n\n".join(context_parts)
+    
+    def add_to_working_memory(self, content: str, metadata: Optional[Dict[str, Any]] = None):
+        """
+        Add a memory to the short-term working memory.
+        
+        Args:
+            content: Memory content
+            metadata: Optional metadata
+        """
+        memory = {
+            "content": content,
+            "metadata": metadata or {},
+            "timestamp": datetime.utcnow().isoformat(),
+            "id": self._generate_id(content)
+        }
+        
+        self._working_memory.append(memory)
+        
+        # Enforce limit
+        if len(self._working_memory) > self.config.working_memory_limit:
+            self._working_memory.pop(0)
+            
+    def clear_working_memory(self):
+        """Clear the working memory."""
+        self._working_memory = []
     
     def clear(self, namespace: Optional[str] = None):
         """Clear memories for a namespace."""

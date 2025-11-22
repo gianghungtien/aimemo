@@ -128,3 +128,41 @@ def test_context_manager(temp_db):
     # Should be disabled after exiting context
     assert not aimemo._enabled
 
+
+def test_working_memory(aimemo):
+    """Test working memory functionality."""
+    aimemo.add_to_working_memory("Important fact")
+    assert len(aimemo._working_memory) == 1
+    
+    # Test limit
+    limit = aimemo.config.working_memory_limit
+    for i in range(limit + 2):
+        aimemo.add_to_working_memory(f"Fact {i}")
+        
+    assert len(aimemo._working_memory) == limit
+    assert aimemo._working_memory[-1]["content"] == f"Fact {limit + 1}"
+
+
+def test_conscious_mode(temp_db):
+    """Test conscious mode context injection."""
+    store = SQLiteStore(temp_db)
+    aimemo = AIMemo(store=store, conscious_ingest=True)
+    
+    aimemo.add_to_working_memory("I am in conscious mode")
+    
+    context = aimemo.get_context("test")
+    assert "Working Memory:" in context
+    assert "I am in conscious mode" in context
+
+
+def test_auto_mode_fallback(temp_db):
+    """Test fallback to auto mode (search)."""
+    store = SQLiteStore(temp_db)
+    aimemo = AIMemo(store=store, conscious_ingest=False, auto_ingest=True)
+    
+    aimemo.add_memory("Stored memory")
+    
+    context = aimemo.get_context("Stored")
+    assert "Previous context:" in context
+    assert "Stored memory" in context
+

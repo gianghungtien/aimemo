@@ -26,6 +26,7 @@ class Config:
         enable_extraction: Enable entity extraction
         enable_categorization: Enable memory categorization
         extraction_confidence_threshold: Minimum confidence for extracted entities
+        working_memory_limit: Maximum items in working memory
     """
     
     db_path: str = field(default_factory=lambda: os.getenv("AIMEMO_DB_PATH", "aimemo.db"))
@@ -36,6 +37,7 @@ class Config:
     enable_extraction: bool = field(default_factory=lambda: os.getenv("AIMEMO_ENABLE_EXTRACTION", "true").lower() == "true")
     enable_categorization: bool = field(default_factory=lambda: os.getenv("AIMEMO_ENABLE_CATEGORIZATION", "true").lower() == "true")
     extraction_confidence_threshold: float = field(default_factory=lambda: float(os.getenv("AIMEMO_EXTRACTION_THRESHOLD", "0.8")))
+    working_memory_limit: int = field(default_factory=lambda: int(os.getenv("AIMEMO_WORKING_MEMORY_LIMIT", "5")))
     
     @classmethod
     def from_env(cls) -> "Config":

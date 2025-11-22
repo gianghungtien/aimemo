@@ -26,12 +26,12 @@
 
 ### 3. Memory Modes Implementation
 **Files**: `aimemo/core.py`, `aimemo/modes.py`
-- [ ] Add `conscious_ingest` parameter to AIMemo
-- [ ] Add `auto_ingest` parameter to AIMemo
-- [ ] Implement short-term memory store (in-memory)
-- [ ] Add mode-specific context retrieval
+- [x] Add `conscious_ingest` parameter to AIMemo
+- [x] Add `auto_ingest` parameter to AIMemo
+- [x] Implement short-term memory store (in-memory)
+- [x] Add mode-specific context retrieval
 - [ ] Update provider interceptors for modes
-- [ ] Write tests
+- [x] Write tests
 
 **Dependencies**: None  
 **Estimated Time**: 3-4 days
