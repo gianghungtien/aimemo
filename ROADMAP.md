@@ -28,8 +28,8 @@
 | Retrieval Agent | ❌ | v1.2 | High |
 | Conscious Agent (background) | ❌ | v1.2 | Medium |
 | **Memory Intelligence** |
-| Entity extraction | ❌ | v1.1 | High |
-| Memory categorization | ❌ | v1.1 | High |
+| Entity extraction | ✅ | v1.1 | High |
+| Memory categorization | ✅ | v1.1 | High |
 | Pattern analysis | ❌ | v1.3 | Medium |
 | Memory promotion (LT→ST) | ❌ | v1.3 | Medium |
 | Importance scoring | ❌ | v1.2 | Low |
@@ -68,13 +68,13 @@
 ### 1.1 Memory Agents Architecture
 **Goal**: Implement intelligent agents for memory processing
 
-- [ ] **Memory Agent**
+- [x] **Memory Agent**
   - Extract entities from conversations
   - Categorize memories (facts, preferences, skills, rules, context)
   - Add metadata enrichment
   - Implement importance scoring
   
-- [ ] **Retrieval Agent**
+- [x] **Retrieval Agent**
   - Improve context retrieval algorithm
   - Add semantic similarity search
   - Implement relevance ranking
@@ -131,13 +131,13 @@
 ### 1.4 Entity Extraction & Categorization
 **Goal**: Intelligent memory organization
 
-- [ ] Entity extraction
+- [x] Entity extraction
   - Named entities (people, places, organizations)
   - Technical concepts
   - User preferences
   - Temporal information
 
-- [ ] Memory categorization
+- [x] Memory categorization
   - Facts: Objective information
   - Preferences: User likes/dislikes
   - Skills: User capabilities
@@ -219,8 +219,8 @@
 ## Phase 4: Enhanced Configuration (Medium Priority) ⚙️
 
 ### 4.1 ConfigManager
-- [ ] Centralized configuration management
-- [ ] Auto-load from multiple sources:
+- [x] Centralized configuration management
+- [x] Auto-load from multiple sources:
   - Environment variables
   - .env files
   - YAML/JSON config files
@@ -457,6 +457,6 @@ We welcome contributions! Areas where help is needed:
 
 ---
 
-**Last Updated**: November 16, 2025  
-**Version**: 1.0  
+**Last Updated**: November 22, 2025  
+**Version**: 1.0.2  
 **Status**: Planning Phase

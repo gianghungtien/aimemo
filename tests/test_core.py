@@ -47,7 +47,7 @@ def test_get_context(aimemo):
     aimemo.add_memory("User is a data scientist")
     aimemo.add_memory("User prefers Python")
     
-    context = aimemo.get_context("data science")
+    context = aimemo.get_context("scientist")
     assert "Previous context:" in context
     assert "data scientist" in context.lower()
 

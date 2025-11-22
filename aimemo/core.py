@@ -10,6 +10,9 @@ import hashlib
 from .storage import MemoryStore, SQLiteStore
 from .config import Config
 from .providers import OpenAIProvider, AnthropicProvider
+from .extractors import EntityExtractor, RegexEntityExtractor
+from .categorizer import MemoryCategorizer, KeywordCategorizer, MemoryCategory
+from .retrieval import ContextRetriever
 
 
 class AIMemo:
@@ -31,6 +34,8 @@ class AIMemo:
         config: Optional[Config] = None,
         namespace: str = "default",
         auto_enable: bool = False,
+        conscious_ingest: bool = False,
+        auto_ingest: bool = False,
     ):
         """
         Initialize AIMemo memory system.
@@ -40,10 +45,20 @@ class AIMemo:
             config: Configuration object
             namespace: Namespace for isolating memories
             auto_enable: Automatically enable interceptors
+            conscious_ingest: Enable conscious mode (working memory)
+            auto_ingest: Enable auto mode (dynamic search)
         """
         self.config = config or Config()
         self.store = store or SQLiteStore(self.config.db_path)
         self.namespace = namespace
+        self.conscious_ingest = conscious_ingest
+        self.auto_ingest = auto_ingest
+        
+        # Initialize intelligence components
+        self.extractor = RegexEntityExtractor()
+        self.categorizer = KeywordCategorizer()
+        self.retriever = ContextRetriever(self.store)
+        
         self._enabled = False
         self._providers = {}
         
@@ -83,6 +98,7 @@ class AIMemo:
         content: str,
         metadata: Optional[Dict[str, Any]] = None,
         tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
     ) -> str:
         """
         Manually add a memory.
@@ -97,13 +113,34 @@ class AIMemo:
         """
         memory_id = self._generate_id(content)
         
+        # Extract entities
+        entities = self.extractor.extract(content)
+        
+        # Categorize if not provided
+        if not category:
+            category = self.categorizer.categorize(content)
+            
+        # Update metadata with entities
+        meta = metadata or {}
+        if entities:
+            meta["entities"] = [
+                {
+                    "name": e.name,
+                    "type": e.type,
+                    "value": e.value,
+                    "confidence": e.confidence
+                }
+                for e in entities
+            ]
+        
         memory = {
             "id": memory_id,
             "content": content,
-            "metadata": metadata or {},
+            "metadata": meta,
             "tags": tags or [],
             "namespace": self.namespace,
             "timestamp": datetime.utcnow().isoformat(),
+            "category": category,
         }
         
         self.store.save(memory)
@@ -114,6 +151,7 @@ class AIMemo:
         query: str,
         limit: int = 5,
         tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """
         Search memories by query.
@@ -122,6 +160,7 @@ class AIMemo:
             query: Search query
             limit: Maximum results
             tags: Filter by tags
+            category: Filter by category
             
         Returns:
             List of matching memories
@@ -131,6 +170,7 @@ class AIMemo:
             namespace=self.namespace,
             limit=limit,
             tags=tags,
+            category=category,
         )
     
     def get_context(self, query: str, limit: int = 5) -> str:
@@ -144,16 +184,13 @@ class AIMemo:
         Returns:
             Formatted context string
         """
-        memories = self.search(query, limit=limit)
+        memories = self.retriever.get_relevant_context(
+            query=query,
+            namespace=self.namespace,
+            limit=limit
+        )
         
-        if not memories:
-            return ""
-        
-        context_parts = ["Previous context:"]
-        for mem in memories:
-            context_parts.append(f"- {mem['content']}")
-        
-        return "\n".join(context_parts)
+        return self.retriever.format_context(memories)
     
     def clear(self, namespace: Optional[str] = None):
         """Clear memories for a namespace."""
